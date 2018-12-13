@@ -10,6 +10,9 @@ import pandas as pd
 import re
 import seaborn as sns
 
+estimator = None
+testing_set = None
+
 sio = socketio.AsyncServer(async_mode='aiohttp')
 app = web.Application()
 sio.attach(app)
@@ -32,7 +35,11 @@ async def index(request):
 
 @sio.on('my event', namespace='/test')
 async def test_message(sid, message):
-    initClassifier()
+    num = int(message['data'])
+    testing_ele = pd.Dataframe([testing_set[num]])
+    predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele)
+    prediction = estimator.predict(predict_test_ele_fn)
+    print(prediction)
     await sio.emit('my response', {'data': message['data']}, room=sid,
                    namespace='/test')
 
@@ -86,8 +93,17 @@ def test_disconnect(sid):
     print('Client disconnected')
 
 def initClassifier():
+    global estimator
+    global testing_set
     data = pd.read_csv("final_data_parsed.csv")
-    print(data.head(10))
+    training_set = data.head(int(len(data) * 0.8))
+    testing_set = data.tail(len(data) - int(len(data) * 0.8))
+    estimator = tf.estimator.DNNClassifier(
+    hidden_units=[500, 100],
+    feature_columns=[embedded_text_feature_column],
+    n_classes=2,
+    optimizer=tf.train.AdagradOptimizer(learning_rate=0.003),
+    model_dir='models/spam')
 
 app.router.add_static('/static', 'static')
 app.router.add_get('/', index)
@@ -95,4 +111,5 @@ app.router.add_get('/', index)
 
 if __name__ == '__main__':
     sio.start_background_task(background_task)
+    initClassifier()
     web.run_app(app)
