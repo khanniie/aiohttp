@@ -42,6 +42,7 @@ async def test_message(sid, message):
         prediction = estimator.predict(predict_test_ele_fn)
         print(prediction)
     except:
+        print(message['data'])
         print("not an int")
     await sio.emit('my response', {'data': message['data']}, room=sid,
                    namespace='/test')
