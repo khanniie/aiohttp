@@ -45,10 +45,11 @@ async def test_message(sid, message):
         print(prediction)
     except KeyError:
         print("key error")
+        print(message, message.get('data', None), type(message.get('data', None)))
     except ValueError:
         print(message['data'])
         print("not an int")
-    
+
     await sio.emit('my response', {'data': message['data']}, room=sid,
                    namespace='/test')
 
