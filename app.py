@@ -38,7 +38,7 @@ async def test_message(sid, message):
 
     try:
         num = int(message['data'])
-        print(len(testing_set))
+        print(testing_set)
         testing_ele = pd.DataFrame('content',[testing_set[num]])
         predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele)
         prediction = estimator.predict(predict_test_ele_fn)
@@ -107,7 +107,7 @@ def initClassifier():
     global testing_set
     data = pd.read_csv("final_data_parsed.csv")
     training_set = data.head(int(len(data) * 0.8))
-    testing_set = data.tail(len(data) - int(len(data) * 0.8))
+    testing_set = data.tail(int(len(data) * 0.2))
     embedded_text_feature_column = hub.text_embedding_column( key="content", module_spec="https://tfhub.dev/google/nnlm-en-dim128/1")
     estimator = tf.estimator.DNNClassifier(
     hidden_units=[500, 100], feature_columns=[embedded_text_feature_column],n_classes=2,
