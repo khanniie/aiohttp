@@ -43,10 +43,12 @@ async def test_message(sid, message):
         predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele)
         prediction = estimator.predict(predict_test_ele_fn)
         print(prediction)
-    except:
+    except KeyError:
+        print("key error")
+    except ValueError:
         print(message['data'])
         print("not an int")
-
+    
     await sio.emit('my response', {'data': message['data']}, room=sid,
                    namespace='/test')
 
