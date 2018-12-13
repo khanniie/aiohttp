@@ -35,12 +35,8 @@ async def index(request):
 
 @sio.on('classify', namespace='/test')
 async def test_message(sid, message):
-    try:
-        num = int(message['data'])
-    except:
-        num = 11182
-    print(testing_set['content'][num])
-    testing_ele = pd.DataFrame({'content':[testing_set['content'][num]]})
+    content = message['data']
+    testing_ele = pd.DataFrame({'content':[content]})
     predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele, shuffle=False)
     prediction = estimator.predict(predict_ele_input_fn)
     print(list(prediction)[0]['class_ids'][0])
