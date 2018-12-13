@@ -99,6 +99,7 @@ def test_disconnect(sid):
 
 
 def initClassifier():
+    print("init")
     global estimator
     global testing_set
     data = pd.read_csv("final_data_parsed.csv")
