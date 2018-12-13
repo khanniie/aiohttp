@@ -92,16 +92,17 @@ async def test_connect(sid, environ):
 def test_disconnect(sid):
     print('Client disconnected')
 
+
+
 def initClassifier():
     global estimator
     global testing_set
     data = pd.read_csv("final_data_parsed.csv")
     training_set = data.head(int(len(data) * 0.8))
     testing_set = data.tail(len(data) - int(len(data) * 0.8))
+    embedded_text_feature_column = hub.text_embedding_column( key="content", module_spec="https://tfhub.dev/google/nnlm-en-dim128/1")
     estimator = tf.estimator.DNNClassifier(
-    hidden_units=[500, 100],
-    feature_columns=[embedded_text_feature_column],
-    n_classes=2,
+    hidden_units=[500, 100], feature_columns=[embedded_text_feature_column],n_classes=2,
     optimizer=tf.train.AdagradOptimizer(learning_rate=0.003),
     model_dir='models/spam')
 
