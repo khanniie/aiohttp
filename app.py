@@ -29,7 +29,7 @@ async def background_task():
 
 
 async def index(request):
-    with open('classifer.html') as f:
+    with open('classifier.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
 
