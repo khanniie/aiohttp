@@ -38,9 +38,9 @@ async def test_message(sid, message):
     #try:
     num = int(message['data'])
     print(testing_set)
-    testing_ele = pd.DataFrame('content',[testing_set['content'][num]])
-    predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele)
-    prediction = estimator.predict(predict_test_ele_fn)
+    testing_ele = pd.DataFrame({'content':[testing_set['content'][num]]})
+    predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele, shuffle=False)
+    prediction = estimator.predict(predict_ele_input_fn)
     print(prediction)
 #    except KeyError:
 #        print("key error")
