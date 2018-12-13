@@ -40,7 +40,7 @@ async def test_message(sid, message):
     predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele, shuffle=False)
     prediction = estimator.predict(predict_ele_input_fn)
     print(list(prediction)[0]['class_ids'][0])
-    await sio.emit('my response', {'data': message['data']}, room=sid,
+    await sio.emit('my response', {list(prediction)[0]['class_ids'][0]}, room=sid,
                    namespace='/test')
 
 
