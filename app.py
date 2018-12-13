@@ -18,16 +18,6 @@ app = web.Application()
 sio.attach(app)
 
 
-async def background_task():
-    """Example of how to send server generated events to clients."""
-    count = 0
-    while True:
-        await sio.sleep(10)
-        count += 1
-        await sio.emit('my response', {'data': 'Server generated event'},
-                       namespace='/test')
-
-
 async def index(request):
     with open('classifier.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
@@ -36,11 +26,17 @@ async def index(request):
 @sio.on('classify', namespace='/test')
 async def test_message(sid, message):
     content = message['data']
+    print(content)
     testing_ele = pd.DataFrame({'content':[content]})
     predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele, shuffle=False)
     prediction = estimator.predict(predict_ele_input_fn)
+    print(prediction)
     class_predict = list(prediction)[0]['class_ids'][0]
-    await sio.emit('my response', {'data': class_predict}, room=sid,
+    if class_predict == 0:
+        result = 'not a scam'
+    else:
+        result = 'a scam!'
+    await sio.emit('my response', {'data': result}, room=sid,
                    namespace='/test')
 
 
@@ -112,6 +108,5 @@ app.router.add_get('/', index)
 
 
 if __name__ == '__main__':
-    sio.start_background_task(background_task)
     initClassifier()
     web.run_app(app)
