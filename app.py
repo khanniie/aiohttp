@@ -36,7 +36,7 @@ async def index(request):
 @sio.on('my event', namespace='/test')
 async def test_message(sid, message):
     num = int(message['data'])
-    testing_ele = pd.Dataframe([testing_set[num]])
+    testing_ele = pd.DataFrame('content',[testing_set[num]])
     predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele)
     prediction = estimator.predict(predict_test_ele_fn)
     print(prediction)
