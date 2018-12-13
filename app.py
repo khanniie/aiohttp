@@ -37,13 +37,13 @@ async def index(request):
 async def test_message(sid, message):
     try:
         num = int(message['data'])
-        testing_ele = pd.DataFrame('content',[testing_set[num]])
-        predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele)
-        prediction = estimator.predict(predict_test_ele_fn)
-        print(prediction)
     except:
         print(message['data'])
         print("not an int")
+    testing_ele = pd.DataFrame('content',[testing_set[num]])
+    predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele)
+    prediction = estimator.predict(predict_test_ele_fn)
+    print(prediction)
     await sio.emit('my response', {'data': message['data']}, room=sid,
                    namespace='/test')
 
