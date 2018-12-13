@@ -35,20 +35,19 @@ async def index(request):
 
 @sio.on('my event', namespace='/test')
 async def test_message(sid, message):
-
-    try:
-        num = int(message['data'])
-        print(testing_set)
-        testing_ele = pd.DataFrame('content',[testing_set['content'][num]])
-        predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele)
-        prediction = estimator.predict(predict_test_ele_fn)
-        print(prediction)
-    except KeyError:
-        print("key error")
-        print(message, message.get('data', None), type(message.get('data', None)))
-    except ValueError:
-        print(message['data'])
-        print("not an int")
+    #try:
+    num = int(message['data'])
+    print(testing_set)
+    testing_ele = pd.DataFrame('content',[testing_set['content'][num]])
+    predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele)
+    prediction = estimator.predict(predict_test_ele_fn)
+    print(prediction)
+#    except KeyError:
+#        print("key error")
+#        print(message, message.get('data', None), type(message.get('data', None)))
+#    except ValueError:
+#        print(message['data'])
+#        print("not an int")
 
     await sio.emit('my response', {'data': message['data']}, room=sid,
                    namespace='/test')
