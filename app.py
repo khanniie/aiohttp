@@ -38,7 +38,8 @@ async def test_message(sid, message):
     try:
         num = int(message['data'])
     except:
-        num = 0
+        num = 11182
+    print(testing_set['content'][num])
     testing_ele = pd.DataFrame({'content':[testing_set['content'][num]]})
     predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele, shuffle=False)
     prediction = estimator.predict(predict_ele_input_fn)
