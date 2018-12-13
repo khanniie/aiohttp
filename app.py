@@ -29,11 +29,11 @@ async def background_task():
 
 
 async def index(request):
-    with open('app.html') as f:
+    with open('classifer.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
 
-@sio.on('my event', namespace='/test')
+@sio.on('classify', namespace='/test')
 async def test_message(sid, message):
     try:
         num = int(message['data'])
@@ -43,7 +43,7 @@ async def test_message(sid, message):
     testing_ele = pd.DataFrame({'content':[testing_set['content'][num]]})
     predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele, shuffle=False)
     prediction = estimator.predict(predict_ele_input_fn)
-    print(list(prediction)[0]['class_ids'])
+    print(list(prediction)[0]['class_ids'][0])
     await sio.emit('my response', {'data': message['data']}, room=sid,
                    namespace='/test')
 
