@@ -46,20 +46,38 @@
                 socket.emit('classify', {data: $('#email_content_data').val()});
                 return false;
             });
+	    socket.on('test response', function(msg) {
+                var response = msg.data;
+                console.log(response);
+                $("#text-result").html(response);
+		$("#loader-wrapper2").addClass( "hidden" );
+            });
+
+            $('form#user-created').submit(function(event) {
+                $("#text-result").html("");
+		$("#loader-wrapper2").removeClass( "hidden" );
+		var comp = $('#user_create_one').val() + " " + $('#user_create_two').val()
+                		+ " " + $("#user_create_three").val();
+		console.log(comp);
+		socket.emit('test', {data: comp});
+                return false;
+            });
         });
     </script>
+
 </head>
+
 <body>
     <div class="container">
   <div class="row">
     <div class="col-md-12">
     <h1>Scam Email Classifier</h1>
     <p>This web app will tell you if the text input that you give it is a specific
-       type of email scam colloquially known as the <i class="redcolor"> Nigerian Prince Scam. </i>
+       type of email scam known as the advance-fee scam. The most common variant of this scam is colloquially known as the <i class="redcolor"> Nigerian Prince Scam. </i>
        <br>
        Scams of this type typically involve someone from a foreign country reaching out to their target
        with a "business proposal" that involves them asking if they can deposit a large
-       sum of money into their target's bank account. This is a scam to get the person's bank account information.</p>
+       sum of money into their target's bank account. More information on the structure of such emails and a short interactive exercise are below.</p>
 </div>
   </div>
   <div class="row">
@@ -85,7 +103,78 @@
         <div id="loader"></div>
         <div id="loading-text"><i class="redcolor">classifying...</i></div>
       </div>
-      <p id="log"></p></div>
-  </div></div>
+  </div>
+</div></div>
+<hr>
+<div class="row">
+  <div class="col-md-12">
+  <h2>Learn the structure</h2>
+  <br>
+  <p>This section will explain the structure / plot of a typical advance-fee scam.</p>
+     <br>
+     <div id="explain">
+       <h4>The Usual Storyline (adapted from Wikipedia)</h4>
+     <ol>
+       <li>a person (often a government or bank employee) knows of a large amount of unclaimed money which he cannot access directly. </li>
+       <li>Such people, who may be real but impersonated people or fictitious characters played by the con artist, could include:
+         <ul> <li>the wife or son of a deposed African leader who has amassed a stolen fortune</li>
+           <li> bank employee who knows of a terminally ill wealthy person with no relatives</li>
+           <li>a wealthy foreigner who deposited money in the bank just before dying in a plane crash (leaving no will or known next of kin)</li>
+           <li> a US soldier who has stumbled upon a hidden cache of gold in Iraq
+           <li>a business being audited by the government
+           <li>a disgruntled worker or corrupt government official who has embezzled funds, a refugee
+           </ul>
+        <li>The money could be in the form of:
+          <ul>
+            <li>gold bullion</li>
+            <li>gold dust</li>
+            <li>money in a bank account</li>
+            <li>blood diamonds</li>
+            <li>a series of checks or bank drafts</li>
+          </ul>
+        <li>the sums involved are usually in the millions of dollars</li>
+        <li>the investor is promised a large share, typically ten to forty percent in return for assisting the fraudster to retrieve or expatriate the money.</li>
+   </ol>
+ </div></div></div>
+ <hr>
+<div class="row">
+  <div class="col-md-12">
+    <h2>Try writing your own version</h2>
+  </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+    <form id="user-created" method="POST" action='#'>
+        <br>
+        Dear recipient,
+        <br><br>
+        <p>Introduce yourself, perhaps as a government employee.</p>
+        <textarea type="text" name="emit_data_1" id="user_create_one" placeholder="example: I am writing to you as the assistant of our late ruler."></textarea>
+        <br><br>
+        <p>Provide more context for why you need to send them money.</p>
+        <textarea type="text" name="emit_data_2" id="user_create_two" placeholder="example: He recently died of a serious sickness. He very recently was going to transfer a large sum of money, but died before completing the transaction. I have control over the funds and wish to start a new life in America with them. I have control over the funds and wish to start a new life in America with them and I would like to keep them in your bank account until it is safe to retrieve."></textarea>
+        <br><br>
+        <p>Tell them that the funds are very, very valuable and they will recieve a cut of them for their troubles.</p>
+        <textarea type="text" name="emit_data_3" id="user_create_three" placeholder="example: The funds total twenty five million and you will be compensated 40 percent."></textarea>
+        <br><br>
+        Thanks,
+        <br><br>
+        Dr. Scammer
+        <input type="submit" id="testbutton" value="Test it">
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <h3>Your Results</h3>
+    <div id="test-result-box">
+      <div id="text-result"></div>
+      <div id="loader-wrapper2" class="hidden">
+        <div id="loader"></div>
+        <div id="loading-text"><i class="redcolor">classifying...</i></div>
+      </div>
+  </div>
+</div>
+</div>
 </body>
 </html>

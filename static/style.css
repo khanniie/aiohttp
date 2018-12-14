@@ -12,10 +12,25 @@ h2 { color: #999; margin: 0 100px 30px; font-weight: normal; }
   padding-left: 10%;
   padding-right: 10%;
 }
+
+textarea{
+  width: 100%;
+  height: 200px;
+}
+
 #recieve-box{
   border: 1px solid rgba(0, 0, 0, 0.3);
   width: 100%;
   height: 300px;
+}
+
+#test-result-box{
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 300px;
+  color: rgb(255, 140, 100);
+  font-weight: 500;
+  font-size: 3em;
 }
 
 #classifybutton{
@@ -30,9 +45,29 @@ h2 { color: #999; margin: 0 100px 30px; font-weight: normal; }
   padding-right: 15px;
   border-radius: 5px;
 }
+#testbutton{
+  display: block;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  background-color: rgb(255, 140, 100);
+  color: white;
+  border: 0px;
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 5px;
+}
 .redcolor{
   color: rgb(255, 140, 100);
   font-weight: 500;
+}
+#loader-wrapper2 {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
 }
 
 #loader-wrapper {
@@ -56,6 +91,16 @@ h2 { color: #999; margin: 0 100px 30px; font-weight: normal; }
     border-top-color: #fcd593;
     -webkit-animation: spin 2s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
     animation: spin 2s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+}
+
+::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 0.85em;
+}
+
+#user-created p{
+  color: rgba(0, 0, 0, 0.6);
+  font-style: italic;
 }
 
 .hidden{
@@ -151,3 +196,4 @@ h2 { color: #999; margin: 0 100px 30px; font-weight: normal; }
         transform: rotate(360deg);  /* Firefox 16+, IE 10+, Opera */
     }
 }
+

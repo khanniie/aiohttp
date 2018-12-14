@@ -22,15 +22,19 @@ async def index(request):
     with open('app.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
+def parseString(content):
+    mystring = content.replace('\n', ' ').replace('\r', '')
+    mystring = re.sub(re.compile('<{.*?}>'),"", mystring)
+    mystring = re.sub(r'\d+', '', mystring)
+    mystring = re.sub('[^ a-zA-Z0-9]', ' ', mystring)
+    return mystring.lower()
 
 @sio.on('classify', namespace='/test')
 async def test_message(sid, message):
-    content = message['data']
-    print(content)
+    content = parseString(message['data'])
     testing_ele = pd.DataFrame({'content':[content]})
     predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele, shuffle=False)
     prediction = estimator.predict(predict_ele_input_fn)
-    print(prediction)
     class_predict = list(prediction)[0]['class_ids'][0]
     if class_predict == 0:
         result = 'nspam'
@@ -40,6 +44,20 @@ async def test_message(sid, message):
                    namespace='/test')
 
 
+
+@sio.on('test', namespace='/test')
+async def test_message(sid, message):
+    content = parseString(message['data'])
+    testing_ele = pd.DataFrame({'content':[content]})
+    predict_ele_input_fn = tf.estimator.inputs.pandas_input_fn(testing_ele, shuffle=False)
+    prediction = estimator.predict(predict_ele_input_fn)
+    class_predict = list(prediction)[0]['class_ids'][0]
+    if class_predict == 0:
+        result = 'Your message was not classified as spam.';
+    else:
+        result = 'Your message was classified as spam!';
+    await sio.emit('test response', {'data': result}, room=sid,
+                   namespace='/test')
 
 @sio.on('connect', namespace='/test')
 async def test_connect(sid, environ):
