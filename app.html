@@ -22,25 +22,28 @@
 
             });
             socket.on('disconnect', function() {
-                // alert("disconnected to server!");
+                  alert("disconnected to server!");
             });
             socket.on('my response', function(msg) {
                 var response = msg.data;
                 console.log(response);
-                // if(response === "spam"){
-                //   spam_ele.removeClass( "hidden" );
-                //   nspam_ele.addClass( "hidden" );
-                //   loading_ele.removeClass( "hidden" );
-                // } else if (response === "nspam"){
-                //   nspam_ele.removeClass( "hidden" );
-                //   spam_ele.addClass( "hidden" );
-                //   loading_ele.removeClass( "hidden" );
-                // }
+                if(response === "spam"){
+                   $("#spam").removeClass( "hidden" );
+                   $("#not-spam").addClass( "hidden" );
+                   $("#loader-wrapper").addClass( "hidden" );
+                 } else if (response === "nspam"){
+	           console.log("removing...?");
+                   $("#not-spam").removeClass( "hidden" );
+                   $("#spam").addClass( "hidden" );
+                   $("#loader-wrapper").addClass( "hidden" );
+                 }
             });
 
             $('form#classify').submit(function(event) {
-                // loading_ele.removeClass( "hidden" );
-                socket.emit('classify', {data: $('#emit_email_data').val()});
+                $("#not-spam").addClass( "hidden" );
+                $("#spam").addClass( "hidden" );
+                $("#loader-wrapper").removeClass( "hidden" );
+                socket.emit('classify', {data: $('#email_content_data').val()});
                 return false;
             });
         });
