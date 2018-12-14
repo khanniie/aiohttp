@@ -1,91 +1,88 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>python-socketio test</title>
-    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
+    <title>Email Scam Classifier</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="static/style.css"/>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function(){
+            var spam_ele = document.getElementById("spam");
+            var nspam_ele = document.getElementById("nspam");
+            var loading_ele = document.getElementById("loader-wrapper");
+
             namespace = '/test';
             var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
 
             socket.on('connect', function() {
-                socket.emit('my event', {data: 'I\'m connected!'});
+
             });
             socket.on('disconnect', function() {
-                $('#log').append('<br>Disconnected');
+                alert("disconnected to server!");
             });
             socket.on('my response', function(msg) {
-                $('#log').append('<br>Received: ' + msg.data);
+                var response = msg.data;
+                console.log(response);
+                if(response === "spam"){
+                  spam_ele.removeClass( "hidden" );
+                  nspam_ele.addClass( "hidden" );
+                  loading_ele.removeClass( "hidden" );
+                } else if (response === "nspam"){
+                  nspam_ele.removeClass( "hidden" );
+                  spam_ele.addClass( "hidden" );
+                  loading_ele.removeClass( "hidden" );
+                }
             });
 
-            // event handler for server sent data
-            // the data is displayed in the "Received" section of the page
-            // handlers for the different forms in the page
-            // these send data to the server in a variety of ways
-            $('form#emit').submit(function(event) {
-                socket.emit('my event', {data: $('#emit_data').val()});
-                return false;
-            });
-            $('form#broadcast').submit(function(event) {
-                socket.emit('my broadcast event', {data: $('#broadcast_data').val()});
-                return false;
-            });
-            $('form#join').submit(function(event) {
-                socket.emit('join', {room: $('#join_room').val()});
-                return false;
-            });
-            $('form#leave').submit(function(event) {
-                socket.emit('leave', {room: $('#leave_room').val()});
-                return false;
-            });
-            $('form#send_room').submit(function(event) {
-                socket.emit('my room event', {room: $('#room_name').val(), data: $('#room_data').val()});
-                return false;
-            });
-            $('form#close').submit(function(event) {
-                socket.emit('close room', {room: $('#close_room').val()});
-                return false;
-            });
-            $('form#disconnect').submit(function(event) {
-                socket.emit('disconnect request');
+            $('form#classify').submit(function(event) {
+                loading_ele.removeClass( "hidden" );
+                socket.emit('classify', {data: $('#emit_email_data').val()});
                 return false;
             });
         });
     </script>
 </head>
 <body>
-    <h1>python-socketio test</h1>
-    <h2>Send:</h2>
-    <form id="emit" method="POST" action='#'>
-        <input type="text" name="emit_data" id="emit_data" placeholder="Message">
-        <input type="submit" value="Echo">
+    <div class="container">
+  <div class="row">
+    <div class="col-md-12">
+    <h1>Scam Email Classifier</h1>
+    <p>This web app will tell you if the text input that you give it is a specific
+       type of email scam colloquially known as the <i class="redcolor"> Nigerian Prince Scam. </i>
+       <br>
+       Scams of this type typically involve someone from a foreign country reaching out to their target
+       with a "business proposal" that involves them asking if they can deposit a large
+       sum of money into their target's bank account. This is a scam to get the person's bank account information.</p>
+</div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+    <h3>Text Input</h3>
+    <form id="classify" method="POST" action='#'>
+        <textarea type="text" name="emit_data" id="email_content_data" placeholder="The text of the email that you want to test goes here."></textarea>
+        <input type="submit" id="classifybutton" value="Classify">
     </form>
-    <form id="broadcast" method="POST" action='#'>
-        <input type="text" name="broadcast_data" id="broadcast_data" placeholder="Message">
-        <input type="submit" value="Broadcast">
-    </form>
-    <form id="join" method="POST" action='#'>
-        <input type="text" name="join_room" id="join_room" placeholder="Room Name">
-        <input type="submit" value="Join Room">
-    </form>
-    <form id="leave" method="POST" action='#'>
-        <input type="text" name="leave_room" id="leave_room" placeholder="Room Name">
-        <input type="submit" value="Leave Room">
-    </form>
-    <form id="send_room" method="POST" action='#'>
-        <input type="text" name="room_name" id="room_name" placeholder="Room Name">
-        <input type="text" name="room_data" id="room_data" placeholder="Message">
-        <input type="submit" value="Send to Room">
-    </form>
-    <form id="close" method="POST" action="#">
-        <input type="text" name="close_room" id="close_room" placeholder="Room Name">
-        <input type="submit" value="Close Room">
-    </form>
-    <form id="disconnect" method="POST" action="#">
-        <input type="submit" value="Disconnect">
-    </form>
-    <h2>Receive:</h2>
-    <div><p id="log"></p></div>
+  </div>
+  <div class="col-md-6">
+    <h3>Result</h3>
+    <div id="recieve-box">
+      <div id="not-spam" class="hidden">
+        <img id="rundog" src="static/rundog.gif">
+        <img id="confetti" src="static/confetti.gif">
+        <p class="redcolor">NOT A SCAM!</p>
+      </div>
+      <div id="spam" class="hidden">
+        <p class="redcolor">YES, IT'S A SCAM.</p>
+      </div>
+      <div id="loader-wrapper" class="hidden">
+        <div id="loader"></div>
+        <div id="loading-text"><i class="redcolor">classifying...</i></div>
+      </div>
+      <p id="log"></p></div>
+  </div></div>
 </body>
 </html>

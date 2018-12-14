@@ -19,7 +19,7 @@ sio.attach(app)
 
 
 async def index(request):
-    with open('classifier.html') as f:
+    with open('app.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
 
@@ -33,9 +33,9 @@ async def test_message(sid, message):
     print(prediction)
     class_predict = list(prediction)[0]['class_ids'][0]
     if class_predict == 0:
-        result = 'not a scam'
+        result = 'nspam'
     else:
-        result = 'a scam!'
+        result = 'spam'
     await sio.emit('my response', {'data': result}, room=sid,
                    namespace='/test')
 
