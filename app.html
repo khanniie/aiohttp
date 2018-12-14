@@ -22,24 +22,24 @@
 
             });
             socket.on('disconnect', function() {
-                alert("disconnected to server!");
+                // alert("disconnected to server!");
             });
             socket.on('my response', function(msg) {
                 var response = msg.data;
                 console.log(response);
-                if(response === "spam"){
-                  spam_ele.removeClass( "hidden" );
-                  nspam_ele.addClass( "hidden" );
-                  loading_ele.removeClass( "hidden" );
-                } else if (response === "nspam"){
-                  nspam_ele.removeClass( "hidden" );
-                  spam_ele.addClass( "hidden" );
-                  loading_ele.removeClass( "hidden" );
-                }
+                // if(response === "spam"){
+                //   spam_ele.removeClass( "hidden" );
+                //   nspam_ele.addClass( "hidden" );
+                //   loading_ele.removeClass( "hidden" );
+                // } else if (response === "nspam"){
+                //   nspam_ele.removeClass( "hidden" );
+                //   spam_ele.addClass( "hidden" );
+                //   loading_ele.removeClass( "hidden" );
+                // }
             });
 
             $('form#classify').submit(function(event) {
-                loading_ele.removeClass( "hidden" );
+                // loading_ele.removeClass( "hidden" );
                 socket.emit('classify', {data: $('#emit_email_data').val()});
                 return false;
             });
